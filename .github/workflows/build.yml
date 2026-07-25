@@ -1,4 +1,4 @@
-name: Compilar Sushi Kernel G34
+name: Compilar Kernel G34 (Fonte Limpo)
 
 on:
   workflow_dispatch:
@@ -8,9 +8,10 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Baixar Código-Fonte do Sushi Kernel
+      - name: Baixar Código-Fonte Alternativo
         run: |
-          git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos kernel_workspace
+          # Este repositório é mais limpo e compatível com o G34
+          git clone --depth=1 https://github.com/LineageOS/android_kernel_motorola_sm6375 kernel_workspace
 
       - name: Instalar Dependências
         run: |
@@ -21,7 +22,8 @@ jobs:
       - name: Configurar o Kernel
         run: |
           cd kernel_workspace
-          make ARCH=arm64 vendor/fogos_defconfig
+          # Usando o defconfig genérico para a plataforma SM6375 (G34)
+          make ARCH=arm64 vendor/mojito_defconfig
 
       - name: Compilar o Kernel
         run: |
@@ -41,6 +43,6 @@ jobs:
       - name: Fazer Upload do Kernel Compilado
         uses: actions/upload-artifact@v4
         with:
-          name: sushi-kernel-g34-${{ github.run_id }}
+          name: kernel-g34-limpo-${{ github.run_id }}
           path: build_output/
           retention-days: 7
