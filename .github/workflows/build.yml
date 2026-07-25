@@ -8,12 +8,17 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Baixar Código-Fonte de Forma Automática
+      - name: Baixar Código-Fonte Base
         run: |
-          git clone --depth=1 https://github.com/MotorolaMobilityLLC/kernel-kernel evade_workspace || git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos kernel_workspace
-          if [ ! -d "kernel_workspace" ]; then
-            mv evade_workspace kernel_workspace
-          fi
+          git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos kernel_workspace
+
+      - name: Arrancar o KernelSU pela Raiz
+        run: |
+          cd kernel_workspace
+          # Remove completamente a pasta e os ganchos do KernelSU embutidos
+          rm -rf KernelSU
+          find . -name "*ksu*" -exec rm -rf {} + || true
+          find . -name "*Ksu*" -exec rm -rf {} + || true
 
       - name: Instalar Dependências
         run: |
@@ -44,6 +49,6 @@ jobs:
       - name: Fazer Upload do Kernel Compilado
         uses: actions/upload-artifact@v4
         with:
-          name: kernel-g34-automatico-${{ github.run_id }}
+          name: kernel-g34-limpo-${{ github.run_id }}
           path: build_output/
           retention-days: 7
