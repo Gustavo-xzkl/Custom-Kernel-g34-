@@ -16,7 +16,7 @@ jobs:
         run: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends build-essential libncurses-dev bison flex libssl-dev bc git
+          sudo apt-get install -y --no-install-recommends build-essential libncurses-dev bison flex libssl-dev bc git gcc-aarch64-linux-gnu
 
       - name: Configurar o Kernel
         run: |
