@@ -8,34 +8,28 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      # 1. Faz o download do código-fonte externo do Sushi Kernel diretamente para a máquina do GitHub
       - name: Baixar Código-Fonte do Sushi Kernel
         run: |
-          git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos -b dezesseis-qpr2 kernel_workspace
+          git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos kernel_workspace
 
-      # 2. Instala dependências básicas de compilação no Ubuntu
       - name: Instalar Dependências
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential libncurses-dev bison flex libssl-dev bc git
 
-      # 3. Prepara a configuração do Moto G34 (fogos)
       - name: Configurar o Kernel
         run: |
           cd kernel_workspace
           make ARCH=arm64 fogos_defconfig
 
-      # 4. Compila o Kernel focando na arquitetura ARM64
       - name: Compilar o Kernel
         run: |
           cd kernel_workspace
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
-      # 5. Organiza os arquivos gerados (como a imagem do boot/kernel) para salvar
       - name: Preparar Arquivos para Upload
         run: |
           mkdir -p build_output
-          # O arquivo gerado do kernel costuma ficar em arch/arm64/boot/Image ou Image.gz
           if [ -f kernel_workspace/arch/arm64/boot/Image ]; then
             cp kernel_workspace/arch/arm64/boot/Image build_output/
           elif [ -f kernel_workspace/arch/arm64/boot/Image.gz ]; then
@@ -43,7 +37,6 @@ jobs:
           fi
           cp kernel_workspace/.config build_output/kernel.config
 
-      # 6. Salva o resultado final na aba Actions para você baixar
       - name: Fazer Upload do Kernel Compilado
         uses: actions/upload-artifact@v4
         with:
