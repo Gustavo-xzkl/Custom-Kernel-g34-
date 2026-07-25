@@ -17,29 +17,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential libncurses-dev bison flex libssl-dev bc git
 
-      - name: Configurar o Kernel
+      - name: Procurar Arquivos de Configuração
         run: |
           cd kernel_workspace
-          make ARCH=arm64 fogos_defconfig
-
-      - name: Compilar o Kernel
-        run: |
-          cd kernel_workspace
-          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
-
-      - name: Preparar Arquivos para Upload
-        run: |
-          mkdir -p build_output
-          if [ -f kernel_workspace/arch/arm64/boot/Image ]; then
-            cp kernel_workspace/arch/arm64/boot/Image build_output/
-          elif [ -f kernel_workspace/arch/arm64/boot/Image.gz ]; then
-            cp kernel_workspace/arch/arm64/boot/Image.gz build_output/
-          fi
-          cp kernel_workspace/.config build_output/kernel.config
-
-      - name: Fazer Upload do Kernel Compilado
-        uses: actions/upload-artifact@v4
-        with:
-          name: sushi-kernel-g34-${{ github.run_id }}
-          path: build_output/
-          retention-days: 7
+          echo "Procurando arquivos de config do fogos..."
+          find arch/arm64/configs -name "*fogos*" -o -name "*g34*"
