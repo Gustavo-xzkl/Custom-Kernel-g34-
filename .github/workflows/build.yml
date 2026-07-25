@@ -10,8 +10,8 @@ jobs:
       - name: Compilar Kernel
         uses: dabao1955/android-kernel-build-action@v1.10.2
         with:
-          kernel-source: 'https://github.com/Sushi-Kernel/sushi_kernel_motorola_sm6375'
-          kernel-branch: 'android-14'
+          kernel-source: 'https://github.com/SushiKernel/android_kernel_motorola_fogos'
+          kernel-branch: 'dezesseis-qpr2'
           config-file: 'fogos_defconfig'
           arch: 'arm64'
           compiler: 'clang'
