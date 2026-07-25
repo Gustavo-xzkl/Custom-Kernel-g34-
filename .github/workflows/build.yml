@@ -1,46 +1,5 @@
-name: Compilar Sushi Kernel G34
-
-on:
-  workflow_dispatch:
-
-jobs:
-  build-kernel:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Baixar Código-Fonte do Sushi Kernel
-        run: |
-          git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos kernel_workspace
-
-      - name: Instalar Dependências
+- name: Instalar Dependências
         run: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends build-essential libncurses-dev bison flex libssl-dev bc git gcc-aarch64-linux-gnu
-
-      - name: Configurar o Kernel
-        run: |
-          cd kernel_workspace
-          make ARCH=arm64 vendor/fogos_defconfig
-
-      - name: Compilar o Kernel
-        run: |
-          cd kernel_workspace
-          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
-
-      - name: Preparar Arquivos para Upload
-        run: |
-          mkdir -p build_output
-          if [ -f kernel_workspace/arch/arm64/boot/Image ]; then
-            cp kernel_workspace/arch/arm64/boot/Image build_output/
-          elif [ -f kernel_workspace/arch/arm64/boot/Image.gz ]; then
-            cp kernel_workspace/arch/arm64/boot/Image.gz build_output/
-          fi
-          cp kernel_workspace/.config build_output/kernel.config
-
-      - name: Fazer Upload do Kernel Compilado
-        uses: actions/upload-artifact@v4
-        with:
-          name: sushi-kernel-g34-${{ github.run_id }}
-          path: build_output/
-          retention-days: 7
+          sudo apt-get install -y --no-install-recommends build-essential libncurses-dev bison flex libssl-dev bc git gcc-aarch64-linux-gnu curl ca-certificates make
