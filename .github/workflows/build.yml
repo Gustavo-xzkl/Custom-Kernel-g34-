@@ -1,0 +1,17 @@
+name: Compilar Sushi Kernel G34
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compilar Kernel
+        uses: dabao1955/android-kernel-build-action@v1.10.2
+        with:
+          kernel-source: 'https://github.com/Sushi-Kernel/sushi_kernel_motorola_sm6375'
+          kernel-branch: 'android-14'
+          config-file: 'fogos_defconfig'
+          arch: 'arm64'
+          compiler: 'clang'
