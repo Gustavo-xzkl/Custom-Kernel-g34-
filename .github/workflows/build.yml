@@ -18,11 +18,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends build-essential libncurses-dev bison flex libssl-dev bc git gcc-aarch64-linux-gnu curl ca-certificates make
 
-      - name: Limpar Script Problemático do KernelSU
+      - name: Desativar Integrador do KernelSU
         run: |
           cd kernel_workspace
-          # Remove o submódulo que está quebrando a compilação automática
-          rm -rf KernelSU || true
+          # Apaga totalmente os ganchos do KernelSU do código de arquivos do sistema
+          find . -name "*kernelsu*" -exec rm -rf {} + || true
+          find . -name "*Ksu*" -exec rm -rf {} + || true
+          sed -i '/kernelsu/d' drivers/Makefile || true
+          sed -i '/kernelsu/d' fs/Makefile || true
 
       - name: Configurar o Kernel
         run: |
