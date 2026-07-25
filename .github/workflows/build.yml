@@ -1,4 +1,4 @@
-name: Compilar Sushi Kernel G34
+name: Build Kernel
 
 on:
   workflow_dispatch:
@@ -7,10 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Action
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Compilar Kernel
+      - name: Build Android Kernel
         uses: dabao1955/android-kernel-build-action@v1.10.2
         with:
           kernel-source: 'https://github.com/SushiKernel/android_kernel_motorola_fogos'
