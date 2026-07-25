@@ -1,4 +1,4 @@
-name: Compilar Sushi Kernel G34 Corrigido
+name: Compilar Kernel Oficial G34
 
 on:
   workflow_dispatch:
@@ -8,24 +8,18 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Baixar Código-Fonte do Sushi Kernel
+      - name: Baixar Código-Fonte de Forma Automática
         run: |
-          git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos kernel_workspace
+          git clone --depth=1 https://github.com/MotorolaMobilityLLC/kernel-kernel evade_workspace || git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos kernel_workspace
+          if [ ! -d "kernel_workspace" ]; then
+            mv evade_workspace kernel_workspace
+          fi
 
       - name: Instalar Dependências
         run: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends build-essential libncurses-dev bison flex libssl-dev bc git gcc-aarch64-linux-gnu curl ca-certificates make
-
-      - name: Desativar Integrador do KernelSU
-        run: |
-          cd kernel_workspace
-          # Apaga totalmente os ganchos do KernelSU do código de arquivos do sistema
-          find . -name "*kernelsu*" -exec rm -rf {} + || true
-          find . -name "*Ksu*" -exec rm -rf {} + || true
-          sed -i '/kernelsu/d' drivers/Makefile || true
-          sed -i '/kernelsu/d' fs/Makefile || true
 
       - name: Configurar o Kernel
         run: |
@@ -50,6 +44,6 @@ jobs:
       - name: Fazer Upload do Kernel Compilado
         uses: actions/upload-artifact@v4
         with:
-          name: sushi-kernel-g34-limpo-${{ github.run_id }}
+          name: kernel-g34-automatico-${{ github.run_id }}
           path: build_output/
           retention-days: 7
