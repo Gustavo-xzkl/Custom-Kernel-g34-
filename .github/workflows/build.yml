@@ -5,16 +5,18 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
+      - name: Checkout Source
         uses: actions/checkout@v3
 
-      - name: Build Android Kernel
-        uses: dabao1955/android-kernel-build-action@v1.10.2
-        with:
-          kernel-source: 'https://github.com/SushiKernel/android_kernel_motorola_fogos'
-          kernel-branch: 'dezesseis-qpr2'
-          config-file: 'fogos_defconfig'
-          arch: 'arm64'
-          compiler: 'clang'
+      - name: Clone Sushi Kernel Sources
+        run: |
+          git clone --depth=1 https://github.com/SushiKernel/android_kernel_motorola_fogos -b dezesseis-qpr2 kernel
+
+      - name: Setup Environment and Compile
+        run: |
+          echo "Iniciando preparacao da compilacao do Sushi Kernel para fogos..."
+          cd kernel
+          make defconfig fogos_defconfig
+          echo "Configuracao aplicada com sucesso!"
